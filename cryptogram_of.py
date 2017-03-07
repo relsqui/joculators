@@ -22,39 +22,36 @@ def clean_words():
     with open("/usr/share/dict/words") as f:
         for word in f:
             word = word[:-1]
-            if word.isalpha() and word == word.lower() and all(ord(c) < 128 for c in word):
+            if (word.isalpha() and word == word.lower()
+                and all(ord(c) < 128 for c in word)):
                 words.append(word)
     logger.info("Loaded %s words.", len(words))
     return words
 
-def is_cryptogram_of(*args):
+def normalize(string):
     """
-    Verify whether a set of strings are cryptograms of each other.
+    Convert a string into a normalized cryptogram form, in which each letter is
+    consistently replaced by the first position at which that letter appears in
+    the string. The output of this process for two different strings is
+    identical if and only if the strings are cryptograms of each other.
 
     Args:
-        Any number of strings.
+        A string.
 
     Returns:
-        True if all strings are cryptograms of each other, False otherwise.
+        A list of integers, the normal form of the string.
     """
-    for a in args:
-        if len(a) != len(args[0]):
-            return False
-    ords = list(map(lambda x: list(map(ord, x)), args))
-    maps = [{} for a in args]
-    for i in range(len(args[0])):
-        for j in range(len(args)):
-            if ords[j][i] not in maps[j].keys():
-                maps[j][ords[j][i]] = i
-            ords[j][i] = maps[j][ords[j][i]]
-    for o in ords:
-        if o != ords[0]:
-            return False
-    return True
+    ords = list(map(ord, string))
+    cipher = {}
+    for i in range(len(string)):
+        if ords[i] not in cipher:
+            cipher[ords[i]] = i
+        ords[i] = cipher[ords[i]]
+    return ords
 
 def find_cryptograms(target):
     """
-    Find cryptograms of a target string. Uses the sanitized wordlist provided
+    Find cryptograms of a target string in the sanitized wordlist provided
     by clean_words (lowercase ASCII only from /usr/share/dict/words).
 
     Args:
@@ -65,8 +62,9 @@ def find_cryptograms(target):
     """
     matches = []
     logger.info("Looking for cryptograms of %s.", target)
+    normal_target = normalize(target)
     for w in clean_words():
-        if is_cryptogram_of(w, target):
+        if normalize(w) == normal_target:
             matches.append(w)
     logger.info("Found %s cryptograms.", len(matches))
     return matches
