@@ -1,17 +1,10 @@
 #!/usr/bin/python3
 
 """
-Cryptogram finder and Twitter handle checker. Because I needed both at once.
-(c) 2017 Finn Ellis.
+Cryptogram finder. (c) 2017 Finn Ellis.
 """
 
 import logging
-
-from urllib.request import urlopen
-from urllib.error import HTTPError
-from json import loads
-from contextlib import closing
-from time import sleep
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
@@ -78,35 +71,10 @@ def find_cryptograms(target):
     logger.info("Found %s cryptograms.", len(matches))
     return matches
 
-def check_twitter(handle):
-    """
-    Check whether a handle is available on Twitter. This does NOT do its own rate
-    limiting; don't call it more than once per second.
-
-    Args:
-        The handle to check (a string).
-
-    Returns:
-        True if the handle is available on Twitter, False otherwise.
-    """
-    url = "https://twitter.com/users/username_available?username={0}"
-    logger.debug("Checking %s on Twitter ...", handle)
-    with urlopen(url.format(handle)) as f:
-        response = loads(f.read().decode())
-    return response["valid"]
-
 if __name__ == "__main__":
     """
     Take a word on the command line and return cryptograms preceded by Y or N,
     indicating whether they're available as Twitter handles.
     """
     import sys
-    target = sys.argv[1]
-    matches = find_cryptograms(target)
-    try:
-        for m in matches:
-            print("Y" if check_twitter(m) else "N", m)
-            sleep(1)
-    except HTTPError as e:
-        print(e)
-        print(e.headers)
+    print("\n".join(find_cryptograms(sys.argv[1])))
