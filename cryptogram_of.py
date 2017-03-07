@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
+
 def clean_words():
     """
     Filter /usr/share/dict words for lines which only contain ASCII letters.
@@ -22,11 +23,12 @@ def clean_words():
     with open("/usr/share/dict/words") as f:
         for word in f:
             word = word[:-1]
-            if (word.isalpha() and word == word.lower()
-                and all(ord(c) < 128 for c in word)):
+            if (word.isalpha() and word == word.lower() and
+               all(ord(c) < 128 for c in word)):
                 words.append(word)
     logger.info("Loaded %s words.", len(words))
     return words
+
 
 def normalize(string):
     """
@@ -48,6 +50,7 @@ def normalize(string):
             cipher[ords[i]] = i
         ords[i] = cipher[ords[i]]
     return ords
+
 
 def find_cryptograms(target):
     """
