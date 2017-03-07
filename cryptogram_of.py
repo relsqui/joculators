@@ -1,7 +1,12 @@
 #!/usr/bin/python3
 
 """
-Cryptogram finder. (c) 2017 Finn Ellis.
+Cryptogram finder.
+(c) 2017 Finn Ellis.
+
+A "cryptogram" for the purpose of this module is a string which can be
+transformed into a target string by consistently replacing each letter 1:1
+with another letter (or with itself).
 """
 
 import logging
@@ -13,7 +18,7 @@ logger.setLevel(logging.DEBUG)
 
 def clean_words():
     """
-    Filter /usr/share/dict words for lines which only contain ASCII letters.
+    Filter /usr/share/dict words for lines which only contain lowercase ASCII.
 
     Returns:
         A list of such strings.
@@ -34,7 +39,10 @@ def normalize(string):
     """
     Convert a string into a normalized cryptogram form, in which each letter is
     consistently replaced by the first position at which that letter appears in
-    the string. The output of this process for two different strings is
+    the string. That is, the first letter is replaced by 1, the second is
+    replaced by 2 (unless it's the same as the first, in which case it's also
+    1), the third is replaced by 3 (unless it's the same as a previous letter),
+    and so on. The output of this process for two different strings is
     identical if and only if the strings are cryptograms of each other.
 
     Args:
@@ -74,8 +82,8 @@ def find_cryptograms(target):
 
 if __name__ == "__main__":
     """
-    Take a word on the command line and return cryptograms preceded by Y or N,
-    indicating whether they're available as Twitter handles.
+    Take a word on the command line and return any cryptograms of it which are
+    in the cleaned-up version of /usr/share/dict/words.
     """
     import sys
     print("\n".join(find_cryptograms(sys.argv[1])))
