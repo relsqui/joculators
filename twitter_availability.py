@@ -40,10 +40,12 @@ if __name__ == "__main__":
     """
     import sys
 
-    for handle in sys.stdin:
+    handles = sys.stdin.read().splitlines()
+    first = True
+    for handle in handles:
+        first = False if first else sleep(60)
         try:
             print("Y" if check_twitter(handle) else "N", handle)
-            sleep(60)
         except HTTPError as e:
             print(e)
             break
