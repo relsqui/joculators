@@ -50,6 +50,7 @@ if __name__ == "__main__":
         first = False if first else sleep(60)
         try:
             print("Y" if check_twitter(handle, i, total) else "N", handle)
+            i = i + 1
         except HTTPError as e:
             print(e)
             break
