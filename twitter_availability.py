@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
 
-def check_twitter(handle):
+def check_twitter(handle, i=None, total=None):
     """
     Check whether a handle is available on Twitter. This does NOT do its own rate
     limiting; don't call it more than once per second.
@@ -28,9 +28,11 @@ def check_twitter(handle):
         True if the handle is available on Twitter, False otherwise.
     """
     url = "https://twitter.com/users/username_available?username={0}"
-    logger.debug("Checking %s on Twitter ...", handle)
     with urlopen(url.format(handle)) as f:
         response = loads(f.read().decode())
+    prefix = "({i}/{total}) ".format(i=i, total=total) if i and total else ""
+    status = "available!" if response["valid"] else "taken."
+    logger.debug("%sChecking %s on Twitter ... %s", prefix, handle, status)
     return response["valid"]
 
 if __name__ == "__main__":
@@ -41,11 +43,13 @@ if __name__ == "__main__":
     import sys
 
     handles = sys.stdin.read().splitlines()
+    i = 1
+    total = len(handles)
     first = True
     for handle in handles:
         first = False if first else sleep(60)
         try:
-            print("Y" if check_twitter(handle) else "N", handle)
+            print("Y" if check_twitter(handle, i, total) else "N", handle)
         except HTTPError as e:
             print(e)
             break
