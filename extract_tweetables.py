@@ -35,4 +35,6 @@ def twitter_filter(string):
 
 if __name__ == "__main__":
     import sys
-    print("\n".join(filter(twitter_filter, extract_quotes(sys.stdin))))
+    quotes = filter(twitter_filter, extract_quotes(sys.stdin))
+    if quotes:
+        print("\n".join(quotes))
