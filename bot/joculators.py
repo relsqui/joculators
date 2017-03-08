@@ -15,7 +15,10 @@ with open("for_consuming") as f:
 random.shuffle(grams)
 to_tweet = grams.pop()
 
-twitter.update_status(to_tweet)
+tweet = twitter.update_status(to_tweet)
 
 with open("for_consuming", "w") as f:
     f.write("\n".join(grams))
+
+with open("tweet_history", "a") as f:
+    f.write("{0}\t{1}\n".format(tweet.id, to_tweet))
