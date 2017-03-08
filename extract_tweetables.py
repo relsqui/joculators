@@ -1,5 +1,13 @@
 #!/usr/bin/python3
 
+"""
+Quote extractor.
+(c) 2017 Finn Ellis.
+
+Expects the raw HTML of a WikiQuote page on stdin, and outputs sourced quotes
+which are ASCII-only and short enough to go on Twitter, one per line.
+"""
+
 from bs4 import BeautifulSoup
 
 def extract_quotes(data):
