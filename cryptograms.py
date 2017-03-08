@@ -10,6 +10,7 @@ with another letter (or with itself).
 """
 
 import logging
+import random
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
@@ -79,6 +80,32 @@ def find_cryptograms(target):
             matches.append(w)
     logger.info("Found %s cryptograms.", len(matches))
     return matches
+
+def make_cryptogram(cleartext):
+    """
+    Make a cryptogram by replacing every instance of one letter in a string with
+    a different letter.
+
+    Args:
+        Source string.
+
+    Returns:
+        Encoded string.
+    """
+    cleartext = cleartext.upper()
+    ciphertext = ""
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    shuffled = list(alphabet)
+    random.shuffle(shuffled)
+    mapping = {}
+    for letter in alphabet:
+        mapping[letter] = shuffled.pop()
+    for letter in cleartext:
+        if letter in mapping.keys():
+            ciphertext += mapping[letter]
+        else:
+            ciphertext += letter
+    return ciphertext
 
 if __name__ == "__main__":
     """
