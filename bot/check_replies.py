@@ -60,7 +60,7 @@ def confirm_replies():
         last_seen = int(f.read().strip())
     tweets = twitter.search("to:joculators", since_id=last_seen)
     to_verify = []
-    last_id = None
+    last_id = 0
     for tweet in tweets:
         if check_accuracy(tweet):
             try:
@@ -71,7 +71,8 @@ def confirm_replies():
                     print("skipped sending duplicate reply to tweet", tweet.id, "from ", tweet.author.screen_name)
                 else:
                     print(e)
-        last_id = tweet.id
+        if tweet.id > last_id:
+            last_id = tweet.id
     if last_id:
         with open("last_reply_id", "w") as f:
             f.write(str(last_id))

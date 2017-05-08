@@ -2,3 +2,7 @@ __pycache__
 .*.swp
 *.pyc
 secrets.py
+quotes
+bot/for_consuming
+bot/last_reply_id
+bot/tweet_history
